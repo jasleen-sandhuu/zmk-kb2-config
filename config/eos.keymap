@@ -1,0 +1,121 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
+
+/* Layer Definitions */
+#define ALP 0
+#define SYM 1
+#define NUM 2
+#define NAV 3
+#define SYS 4
+#define ALL ALP SYM NAV NUM SYS
+/* ---------------- */
+
+#include "zmk-helpers/helper.h"
+#include "includes/keylabels.h"
+#include "includes/behaviors.dtsi"  // Requires key-labels.
+#include "includes/combos.dtsi"     // Requires behaviors.
+
+#define XXX &none
+#define ___ &trans
+
+/* Global Overrides */
+&lt {
+    flavor = "balanced";
+    quick-tap-ms=<175>;
+    tapping-term-ms=<200>;
+    retro-tap;
+};
+
+/* Haptic Behaviors */
+/ {
+    HAPTIC_KEYCODE(haptic_lshft, <0xE1>, <&haptic_click_l>, <ALP>)
+    HAPTIC_KEYCODE(haptic_rshft, <0xE5>, <&haptic_click_r>, <ALP>)
+
+    /* OSM position-based haptic */
+    HAPTIC_POSITION(haptic_osm_lm4, <LM4>, <&haptic_click_l>, <SYM NUM>)
+    HAPTIC_POSITION(haptic_osm_lm3, <LM3>, <&haptic_click_l>, <SYM NUM>)
+    HAPTIC_POSITION(haptic_osm_lm2, <LM2>, <&haptic_click_l>, <SYM NUM>)
+    HAPTIC_POSITION(haptic_osm_lm1, <LM1>, <&haptic_click_l>, <SYM NUM>)
+    HAPTIC_POSITION(haptic_osm_rm1, <RM1>, <&haptic_click_r>, <NAV SYS>)
+    HAPTIC_POSITION(haptic_osm_rm2, <RM2>, <&haptic_click_r>, <NAV SYS>)
+    HAPTIC_POSITION(haptic_osm_rm3, <RM3>, <&haptic_click_r>, <NAV SYS>)
+    HAPTIC_POSITION(haptic_osm_rm4, <RM4>, <&haptic_click_r>, <NAV SYS>)
+};
+/* ----------- */
+
+/* Auto-Shift Symbols */
+#define COMMA_SEMI  AS_2(COMMA, SEMI)
+#define DOT_COLON   AS_2(DOT, COLON)
+#define QMARK_EXCL  AS_2(QMARK, EXCL)
+#define AT_AMPS     AS_2(AT, AMPS)
+#define GRAVE_TILDE AS_2(GRAVE, TILDE)
+#define MINUS_EQL   AS_2(MINUS, EQUAL)
+#define PLUS_STAR   AS_2(PLUS, STAR)
+#define COMMA_FSLH  AS_2(COMMA, FSLH)
+#define PCT_DLR     AS_2(PRCNT, DLLR)
+#define SQT_DQT     AS_2(SQT, DQT)
+/* ----------- */
+
+/* Layers */      
+ZMK_LAYER(alph,
+//  ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮  ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+                    &kp W         &kp E         &kp R         &kp T            &kp Y         &kp U         &kp I         &kp O                     
+//  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+      &kp A         &kp S         &kp D         HML(LSHFT,F)  &kp G            &kp H         HMR(RSHFT,J)  &kp K         &kp L         SQT_DQT     
+//  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+      &kp Z         &kp X         &kp C         &lt NUM V     &kp B            &kp N         &lt SYS M     COMMA_SEMI    DOT_COLON     QMARK_EXCL
+//  ╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤  ├─────────────┤─────────────┼─────────────┴─────────────┼─────────────╯
+                                                             &lt NAV SPACE    &lt SYM SPACE 
+//                                                          ╰─────────────╯  ╰─────────────╯
+)
+
+ZMK_LAYER(symb,
+//  ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮  ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+                    &kp PRCNT     &kp PIPE      &kp HASH      AT_AMPS          XXX           XXX           XXX           XXX                       
+//  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+      &kp CARET     &kp PLUS      &kp MINUS     &kp UNDER     &kp DLLR         XXX           OSM(RGUI)     OSM(RALT)     OSM(RCTRL)    OSM(RSHFT)  
+//  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+      &kp LT        &kp STAR      GRAVE_TILDE   &kp EQUAL     &kp GT           XXX           XXX           XXX           XXX           XXX         
+//  ╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤  ├─────────────┤─────────────┼─────────────┴─────────────┼─────────────╯
+                                                              ___              ___          
+//                                                          ╰─────────────╯  ╰─────────────╯
+)
+
+ZMK_LAYER(numb,
+//  ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮  ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+                    XXX           XXX           XXX           XXX              PCT_DLR       &kp N7        &kp N8        &kp N9
+//  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+      OSM(LSHFT)    OSM(LCTRL)    OSM(LALT)     OSM(LGUI)     XXX              MINUS_EQL     &kp N4        &kp N5        &kp N6        PLUS_STAR
+//  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+      XXX           XXX           XXX           XXX           XXX              COMMA_FSLH    &kp N1        &kp N2        &kp N3        DOT_COLON
+//  ╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤  ├─────────────┤─────────────┼─────────────┴─────────────┼─────────────╯
+                                                              ___              &kp N0          
+//                                                          ╰─────────────╯  ╰─────────────╯
+)
+
+ZMK_LAYER(navi,
+//  ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮  ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+                    XXX           XXX           XXX           XXX              XXX           &kp DEL       &kp ENTER     &kp BSPC                 
+//  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+      OSM(LSHFT)    OSM(LCTRL)    OSM(LALT)     OSM(LGUI)     XXX              &sel_prv      &jump_prv     &kp UP        &jump_nxt     &sel_nxt
+//  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+      XXX           XXX           XXX           XXX           XXX              &kp LG(LEFT)  &kp LEFT      &kp DOWN      &kp RIGHT     &kp LG(RIGHT)
+//  ╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤  ├─────────────┤─────────────┼─────────────┴─────────────┼─────────────╯
+                                                              ___              ___          
+//                                                          ╰─────────────╯  ╰─────────────╯
+)
+
+ZMK_LAYER(syst,
+//  ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮  ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+                    &bt_sel       &bt BT_CLR    &out OUT_TOG  XXX              XXX           XXX           XXX           XXX                       
+//  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+      XXX           XXX           XXX           XXX           XXX              XXX           OSM(RGUI)     OSM(RALT)     OSM(RCTRL)    OSM(RSHFT)  
+//  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤  ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+      XXX           XXX           XXX           XXX           XXX              XXX           XXX           XXX           XXX           XXX         
+//  ╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤  ├─────────────┤─────────────┼─────────────┴─────────────┼─────────────╯
+                                                              ___              ___          
+//                                                          ╰─────────────╯  ╰─────────────╯
+)
+/* ----------- */

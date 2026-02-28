@@ -1,0 +1,40 @@
+/*
+╭─────────────────────┬─────────────────────╮
+│ --- LT3 LT2 LT1 LT0 │ RT0 RT1 RT2 RT3 --- │
+│ LM4 LM3 LM2 LM1 LM0 │ RM0 RM1 RM2 RM3 RM4 │
+│ LB4 LB3 LB2 LB1 LB0 │ RB0 RB1 RB2 RB3 RB4 │
+╰──────────────╮  LH0 │ RH0 ╭───────────────╯
+               ╰──────┴─────╯
+*/
+
+
+#define COMBO_TERM_FAST 18  // For combos that are triggered by rollable key-sequences.
+#define COMBO_TERM_DEF  40  // For combos that are triggered by non-rollable / non home-row key-sequences.
+#define COMBO_TERM_SLOW 75  // For combos that are triggered by hard-to-misfire keys.
+#define COMBO_IDLE_FAST 50  // For vertical combos, usually triggered by non-rollable keys.
+#define COMBO_IDLE_DEF  150 // For horizontal combos, usually triggered by rollable keys.
+#define COMBO_IDLE_SLOW 250 // For combos that are trigger layer changes or mods.
+
+/* Alphabet combos */
+ZMK_COMBO(q, &kp Q, LT2 LT3, ALP, COMBO_TERM_FAST, COMBO_IDLE_DEF)
+ZMK_COMBO(j, &kp J, RT2 RT3, ALP, COMBO_TERM_FAST, COMBO_IDLE_DEF)
+
+/* Vertical combos */
+ZMK_COMBO(fslh, &kp FSLH, LM0 LT0, ALL, COMBO_TERM_DEF, COMBO_IDLE_FAST)
+ZMK_COMBO(bslh, &kp BSLH, RM0 RT0, ALL, COMBO_TERM_DEF, COMBO_IDLE_FAST)
+ZMK_COMBO(lbkt, &kp LPAR, LM1 LT1, ALL, COMBO_TERM_DEF, COMBO_IDLE_FAST)
+ZMK_COMBO(rbkt, &kp RPAR, RM1 RT1, ALL, COMBO_TERM_DEF, COMBO_IDLE_FAST)
+ZMK_COMBO(lpar, &kp LBKT, LM2 LT2, ALL, COMBO_TERM_DEF, COMBO_IDLE_FAST)
+ZMK_COMBO(rpar, &kp RBKT, RM2 RT2, ALL, COMBO_TERM_DEF, COMBO_IDLE_FAST)
+ZMK_COMBO(lbrc, &kp LBRC, LM3 LT3, ALL, COMBO_TERM_DEF, COMBO_IDLE_FAST)
+ZMK_COMBO(rbrc, &kp RBRC, RM3 RT3, ALL, COMBO_TERM_DEF, COMBO_IDLE_FAST)
+
+/* Control combos */
+ZMK_COMBO(bspc,  &kp BSPC, RM1 RM2 RM3, ALL, COMBO_TERM_SLOW,  COMBO_IDLE_DEF)
+ZMK_COMBO(esc,   &kp ESC,  LM1 LM2 LM3, ALL, COMBO_TERM_SLOW,  COMBO_IDLE_DEF)
+ZMK_COMBO(tab,   &kp TAB,      LB2 LB3, ALL, COMBO_TERM_FAST, COMBO_IDLE_DEF)
+ZMK_COMBO(enter, &kp ENTER,    RB2 RB3, ALL, COMBO_TERM_FAST, COMBO_IDLE_DEF)
+
+/* Layer Combos */
+ZMK_COMBO(lcapsword, &caps_word, LB1 LB0, ALP, COMBO_TERM_DEF, COMBO_IDLE_SLOW)
+ZMK_COMBO(rcapsword, &caps_word, RB1 RB0, ALP, COMBO_TERM_DEF, COMBO_IDLE_SLOW)

@@ -1,0 +1,135 @@
+/* Dead Keys */
+#define DEAD_KEY_BASE 0x070100
+#define DEAD_KEY(i) (DEAD_KEY_BASE + (i))
+/* ------------- */
+
+/* Home-Row Mods */
+ZMK_HOLD_TAP(hml,
+    flavor="balanced";
+    tapping-term-ms=<280>;
+    quick-tap-ms=<175>;
+    require-prior-idle-ms=<130>;
+    bindings=<&kp>,<&kp>;
+    hold-trigger-key-positions = <KEYS_R THUMBS_L THUMBS_R>;
+    hold-trigger-on-release;
+)
+
+ZMK_HOLD_TAP(hmr,
+    flavor="balanced";
+    tapping-term-ms=<280>;
+    quick-tap-ms=<175>;
+    require-prior-idle-ms=<130>;
+    bindings=<&kp>,<&kp>;
+    hold-trigger-key-positions = <KEYS_L THUMBS_L THUMBS_R>;
+    hold-trigger-on-release;
+)
+
+#define HML(mod_key, alpha_key) &hml mod_key alpha_key // HRM Left Hand
+#define HMR(mod_key, alpha_key) &hmr mod_key alpha_key // HRM Right Hand
+/* ------------- */
+
+/* BT Device Chooser */
+ZMK_TAP_DANCE(
+    bt_sel,
+    tapping-term-ms=<200>;
+    bindings=<&bt BT_SEL 0>,<&bt BT_SEL 1>,<&bt BT_SEL 2>;
+)
+/* ----------- */
+
+/* Auto Shift */
+ZMK_HOLD_TAP(as,
+    flavor="tap-preferred";
+    tapping-term-ms=<180>;
+    bindings=<&kp>,<&kp>;
+)
+
+#define AS_1(keycode) &as LS(keycode) keycode
+#define AS_2(keycode1, keycode2) &as keycode2 keycode1
+/* ------------- */
+
+/* Haptic Feedback */
+#define HAPTIC_OBG(node_name, device_ref, force_val) \
+    node_name: node_name {                           \
+        compatible = "zmk,output-behavior-generic";  \
+        #binding-cells = <0>;                        \
+        device = <device_ref>;                       \
+        force = <force_val>;                         \
+    };
+
+#define OUTPUT_SOURCE_LAYER_STATE_CHANGE 1
+#define HAPTIC_LAYER(node_name, bindings_list, layers_list)  \
+    node_name: node_name {                                   \
+        compatible = "zmk,output-behavior-listener";         \
+        bindings = bindings_list;                            \
+        layers = layers_list;                                \
+        sources = <OUTPUT_SOURCE_LAYER_STATE_CHANGE>;        \
+        all-state;                                           \
+    };
+
+#define OUTPUT_SOURCE_POSITION_STATE_CHANGE 2
+#define HAPTIC_POSITION(node_name, pos_list, bindings_list, layers_list) \
+    node_name: node_name {                                               \
+        compatible = "zmk,output-behavior-listener";                     \
+        bindings = bindings_list;                                        \
+        position = pos_list;                                             \
+        layers = layers_list;                                            \
+        sources = <OUTPUT_SOURCE_POSITION_STATE_CHANGE>;                 \
+    };
+
+#define OUTPUT_SOURCE_KEYCODE_STATE_CHANGE 3
+#define HAPTIC_KEYCODE(node_name, keycode, bindings_list, layers_list) \
+    node_name: node_name {                                             \
+        compatible = "zmk,output-behavior-listener";                   \
+        bindings = bindings_list;                                      \
+        position = keycode;                                            \
+        layers = layers_list;                                          \
+        sources = <OUTPUT_SOURCE_KEYCODE_STATE_CHANGE>;                \
+    };
+
+/ {
+    HAPTIC_OBG(haptic_click_l, &haptic_l, 1)
+    HAPTIC_OBG(haptic_click_r, &haptic_r, 1)
+    HAPTIC_OBG(haptic_bump_l, &haptic_l, 7)
+    HAPTIC_OBG(haptic_bump_r, &haptic_r, 7)
+};
+/* ----------- */
+
+/* One-Shot Mods */
+ZMK_STICKY_KEY(osm_sk,
+    release-after-ms=<3000>;
+    bindings=<&kp>;
+    quick-release;
+    lazy;
+    ignore-modifiers;
+)
+
+ZMK_HOLD_TAP(osm,
+    flavor="balanced";
+    tapping-term-ms=<280>;
+    bindings=<&kp>,<&osm_sk>;
+    hold-while-undecided-linger;
+)
+
+#define OSM(keycode) &osm keycode keycode
+/* ----------- */
+
+/* Jump Cusor */
+// To end of next word
+ZMK_MACRO(jump_nxt, bindings=<&macro_tap &kp LA(RIGHT)>;)
+// To end of current word
+ZMK_MACRO(jump_end, bindings=<&macro_tap &kp LA(LEFT) &kp LA(RIGHT)>;)
+// To beg of next word
+ZMK_MACRO(jump_prv, bindings=<&macro_tap &kp LA(LEFT)>;)
+// To beg of current word
+ZMK_MACRO(jump_bgn, bindings=<&macro_tap &kp LA(RIGHT) &kp LA(LEFT)>;)
+/* ----------- */
+
+/* Select Word */
+// Jumps to the beginning of the current word and selects to the right of the cursor.
+ZMK_MACRO(_sel_nxt, bindings=<&macro_tap &kp LS(LA(RIGHT))>;)
+ZMK_TRI_STATE(sel_nxt, bindings=<&jump_bgn>,<&_sel_nxt>,<&none>;)
+
+// Jump to the end of the current word and selects to the left of the cursor.
+ZMK_MACRO(_sel_prv, bindings=<&macro_tap &kp LS(LA(LEFT))>;)
+ZMK_TRI_STATE(sel_prv, bindings=<&jump_end>,<&_sel_prv>,<&none>;)
+/* ----------- */
