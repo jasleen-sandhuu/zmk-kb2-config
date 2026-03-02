@@ -28,11 +28,23 @@ ZMK_HOLD_TAP(hmr,
 #define HMR(mod_key, alpha_key) &hmr mod_key alpha_key // HRM Right Hand
 /* ------------- */
 
-/* BT Device Chooser */
+/* OS Mode + BT Controls */
+/* zmk-helpers v0.3 does not ship layer_toggle core, so define it locally. */
+#ifndef ZMK_BEHAVIOR_CORE_layer_toggle
+#define ZMK_BEHAVIOR_CORE_layer_toggle compatible = "zmk,behavior-toggle-layer"; #binding-cells = <1>
+#endif
+
+ZMK_BEHAVIOR(osw_on, layer_toggle, toggle-mode = "on";)
+ZMK_BEHAVIOR(osw_off, layer_toggle, toggle-mode = "off";)
+
+ZMK_MACRO(bt0_mac, bindings=<&macro_tap &bt BT_SEL 0 &osw_off OSW>;)
+ZMK_MACRO(bt1_lnx, bindings=<&macro_tap &bt BT_SEL 1 &osw_on OSW>;)
+ZMK_MACRO(os_tog, bindings=<&macro_tap &tog OSW>;)
+
 ZMK_TAP_DANCE(
-    bt_sel,
-    tapping-term-ms=<200>;
-    bindings=<&bt BT_SEL 0>,<&bt BT_SEL 1>,<&bt BT_SEL 2>;
+    bt_clr,
+    tapping-term-ms=<250>;
+    bindings=<&none>,<&bt BT_CLR>;
 )
 /* ----------- */
 
@@ -115,21 +127,34 @@ ZMK_HOLD_TAP(osm,
 
 /* Jump Cusor */
 // To end of next word
-ZMK_MACRO(jump_nxt, bindings=<&macro_tap &kp LA(RIGHT)>;)
+ZMK_MACRO(j_nxt, bindings=<&macro_tap &kp LA(RIGHT)>;)
 // To end of current word
-ZMK_MACRO(jump_end, bindings=<&macro_tap &kp LA(LEFT) &kp LA(RIGHT)>;)
+ZMK_MACRO(j_end, bindings=<&macro_tap &kp LA(LEFT) &kp LA(RIGHT)>;)
 // To beg of next word
-ZMK_MACRO(jump_prv, bindings=<&macro_tap &kp LA(LEFT)>;)
+ZMK_MACRO(j_prv, bindings=<&macro_tap &kp LA(LEFT)>;)
 // To beg of current word
-ZMK_MACRO(jump_bgn, bindings=<&macro_tap &kp LA(RIGHT) &kp LA(LEFT)>;)
+ZMK_MACRO(j_bgn, bindings=<&macro_tap &kp LA(RIGHT) &kp LA(LEFT)>;)
+
+// Linux variants
+ZMK_MACRO(j_nxt_l, bindings=<&macro_tap &kp LC(RIGHT)>;)
+ZMK_MACRO(j_end_l, bindings=<&macro_tap &kp LC(LEFT) &kp LC(RIGHT)>;)
+ZMK_MACRO(j_prv_l, bindings=<&macro_tap &kp LC(LEFT)>;)
+ZMK_MACRO(j_bgn_l, bindings=<&macro_tap &kp LC(RIGHT) &kp LC(LEFT)>;)
 /* ----------- */
 
 /* Select Word */
 // Jumps to the beginning of the current word and selects to the right of the cursor.
-ZMK_MACRO(_sel_nxt, bindings=<&macro_tap &kp LS(LA(RIGHT))>;)
-ZMK_TRI_STATE(sel_nxt, bindings=<&jump_bgn>,<&_sel_nxt>,<&none>;)
+ZMK_MACRO(_s_nxt, bindings=<&macro_tap &kp LS(LA(RIGHT))>;)
+ZMK_TRI_STATE(s_nxt, bindings=<&j_bgn>,<&_s_nxt>,<&none>;)
 
 // Jump to the end of the current word and selects to the left of the cursor.
-ZMK_MACRO(_sel_prv, bindings=<&macro_tap &kp LS(LA(LEFT))>;)
-ZMK_TRI_STATE(sel_prv, bindings=<&jump_end>,<&_sel_prv>,<&none>;)
+ZMK_MACRO(_s_prv, bindings=<&macro_tap &kp LS(LA(LEFT))>;)
+ZMK_TRI_STATE(s_prv, bindings=<&j_end>,<&_s_prv>,<&none>;)
+
+// Linux variants
+ZMK_MACRO(_s_nxt_l, bindings=<&macro_tap &kp LS(LC(RIGHT))>;)
+ZMK_TRI_STATE(s_nxt_l, bindings=<&j_bgn_l>,<&_s_nxt_l>,<&none>;)
+
+ZMK_MACRO(_s_prv_l, bindings=<&macro_tap &kp LS(LC(LEFT))>;)
+ZMK_TRI_STATE(s_prv_l, bindings=<&j_end_l>,<&_s_prv_l>,<&none>;)
 /* ----------- */
